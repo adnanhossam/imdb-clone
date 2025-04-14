@@ -1,0 +1,152 @@
+{% extends 'home.html' %}
+{% block title %}IMDb Clone{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <!-- Heading -->
+  <h1 class="text-center text-warning mb-4">Name List</h1>
+
+  <!-- Search Form -->
+  <div class="container my-4">
+    <form method="get" action="{% url 'list_name' %}" class="d-flex justify-content-center">
+      <input 
+        type="text" 
+        name="q" 
+        class="form-control me-2" 
+        placeholder="Search names..." 
+        value="{{ request.GET.q }}" 
+        style="max-width: 400px;"
+      >
+      <button type="submit" class="btn btn-warning">Search</button>
+    </form>
+  </div>
+
+  <!-- Showing Results For -->
+  {% if request.GET.q %}
+  <p class="text-center text-white">
+    Showing results for <strong>"{{ request.GET.q }}"</strong>
+  </p>
+  {% endif %}
+
+  <!-- Filter Section -->
+  <div class="row mb-4">
+    <div class="col-md-4 offset-md-4">
+      <div class="card shadow-sm bg-dark text-white">
+        <div class="card-body">
+          <form id="filter-form" method="get" action="{% url 'list_name' %}" class="d-flex align-items-center justify-content-between">
+            <!-- Profession Filter -->
+            <div class="d-flex align-items-center">
+              <i class="bi bi-briefcase-fill text-warning me-2"></i>
+              <select name="profession" id="profession-select" class="form-select form-select-lg" onchange="this.form.submit()">
+                <option value="" disabled {% if not request.GET.profession %}selected{% endif %}>Select Profession</option>
+                <option value="Actor" {% if request.GET.profession == "Actor" %}selected{% endif %}>Actor</option>
+                <option value="Director" {% if request.GET.profession == "Director" %}selected{% endif %}>Director</option>
+                <option value="Writer" {% if request.GET.profession == "Writer" %}selected{% endif %}>Writer</option>
+              </select>
+            </div>
+
+            <!-- Clear Filter Button --> 
+            <button type="button" id="clear-filter" class="btn btn-outline-warning btn-sm ms-2">
+               Clear Filter
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Name Button -->
+  <div class="text-end mb-4">
+    <a href="{% url 'add_name' %}" class="btn btn-primary btn-lg">Add Name</a>
+  </div>
+
+  <!-- Name Cards Section -->
+  <div class="row">
+    {% for name in name %}
+    <div class="col-md-4 mb-4">
+      <a href="{% url 'detail_name' name.id %}" class="card name-card bg-dark text-white shadow-lg text-decoration-none">
+        
+        <!-- Profile Image -->
+        {% if name.profile_picture %}
+        <img
+          src="{{ name.profile_picture.url }}"
+          class="card-img-top"
+          alt="{{ name.name }}"
+          style="height: 250px; object-fit: cover; border-radius: 5px;"
+        />
+        {% else %}
+        <div class="no-image d-flex justify-content-center align-items-center">
+          <span>No Image Available</span>
+        </div>
+        {% endif %}
+
+        <!-- Card Body -->
+        <div class="card-body text-center">
+          <h5 class="card-title mb-3">
+            {{ name.name }}
+          </h5>
+          <p class="profession-highlight mb-3">{{ name.profession }}</p>
+        </div>
+
+      </a>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center text-muted">
+      <p>No names found for the selected profession or search query.</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination Section -->
+  <div class="d-flex justify-content-center my-4">
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        <li class="page-item {% if not name.has_previous %}disabled{% endif %}">
+          <a class="page-link" href="?page=1{% if request.GET.profession %}&profession={{ request.GET.profession }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="First">
+            <span aria-hidden="true">&laquo;&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item {% if not name.has_previous %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ name.previous_page_number }}{% if request.GET.profession %}&profession={{ request.GET.profession }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item {% if not name.has_next %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ name.next_page_number }}{% if request.GET.profession %}&profession={{ request.GET.profession }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        <li class="page-item {% if not name.has_next %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ name.paginator.num_pages }}{% if request.GET.profession %}&profession={{ request.GET.profession }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Last">
+            <span aria-hidden="true">&raquo;&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+  <script defer>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Event listener for "clear-filter" button
+      document.getElementById("clear-filter").addEventListener("click",function() {
+        
+        // Clear the profession filter from the URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete('profession'); // Remove the 'profession' filter parameter from the URL
+        url.searchParams.delete('q'); // Remove the 'q' search query from the URL
+        
+        // Redirect to the updated URL without the filter
+        window.location.href = url.href;
+      });
+
+      // Automatically submit form when a selection is made
+      document.getElementById("profession-select").addEventListener("change", function() {
+        document.getElementById("filter-form").submit();
+      });
+    });
+  </script>
+{% endblock %}

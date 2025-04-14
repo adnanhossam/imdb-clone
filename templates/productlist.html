@@ -1,0 +1,145 @@
+{% extends 'home.html' %}
+
+{% block title %}IMDb Clone{% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+  <!-- Heading -->
+  <h1 class="text-center text-warning mb-4">Product List</h1>
+
+  <!-- Filter Section -->
+  <div class="row mb-4">
+    <div class="col-md-4 offset-md-4">
+      <div class="card shadow-sm bg-dark text-white">
+        <div class="card-body">
+          <form id="filter-form" method="get" action="{% url 'product_list' %}" class="d-flex align-items-center justify-content-between">
+            <!-- Type Filter -->
+            <div class="d-flex align-items-center">
+              <i class="bi bi-briefcase-fill text-warning me-2"></i>
+              <select name="type" id="type-select" class="form-select form-select-lg" onchange="this.form.submit()">
+                <option value="" disabled {% if not request.GET.type %}selected{% endif %}>Select Product Type</option>
+                <option value="Movie" {% if request.GET.type == "Movie" %}selected{% endif %}>Movie</option>
+                <option value="TV-Show" {% if request.GET.type == "TV-Show" %}selected{% endif %}>TV-Show</option>
+                <option value="Set-Com" {% if request.GET.type == "Set-Com" %}selected{% endif %}>Set-Com</option>
+              </select>
+            </div>
+
+            <!-- Clear Filter Button --> 
+            <button type="button" id="clear-filter" class="btn btn-outline-warning btn-sm ms-2">
+               Clear Filter
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Product Button -->
+  <div class="text-end mb-4">
+    <a href="{% url 'add_product' %}" class="btn btn-primary btn-lg">Add Product</a>
+  </div>
+
+  <!-- Search Results Message -->
+  {% if request.GET.q and products %}
+  <p class="text-white text-center mb-4">
+    Showing results for <strong>"{{ request.GET.q }}"</strong>
+  </p>
+  {% endif %}
+
+  <!-- No Results Found Message -->
+  {% if request.GET.q and not products %}
+  <div class="col-12 text-center text-muted my-5">
+    <div class="card bg-dark text-white shadow-lg p-4">
+      <h3 class="text-warning">No Products Found</h3>
+      <p class="mt-2">No results for "<strong>{{ request.GET.q }}</strong>".</p>
+      <p class="mt-2">
+        You can:
+        <ul class="list-unstyled">
+          <li>• Check your search query for typos</li>
+          <li>• Try using different keywords</li>
+          <li>• Clear filters to broaden the search</li>
+        </ul>
+      </p>
+      <!-- Reset Filters Button -->
+      <a href="{% url 'product_list' %}" class="btn btn-warning mt-3">Reset Filters</a>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Product Cards Section -->
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for product in products %}
+    <div class="col">
+      <a href="{% url 'detail_product' product.id %}" class="card bg-dark text-white h-100 shadow-lg text-decoration-none">
+        <!-- Product Thumbnail -->
+        <img src="{{ product.thumbnail.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 250px; object-fit: cover; border-radius: 5px;" />
+        <!-- Card Body -->
+        <div class="card-body text-center">
+          <h5 class="card-title mb-3">{{ product.name }}</h5>
+          <p class="mb-3">IMDb Rating: {{ product.imdb_rating }}</p>
+        </div>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination Section -->
+  <div class="d-flex justify-content-center my-4">
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        <li class="page-item {% if not products.has_previous %}disabled{% endif %}">
+          <a class="page-link" href="?page=1{% if request.GET.some_filter %}&some_filter={{ request.GET.some_filter }}{% endif %}" aria-label="First">
+            <span aria-hidden="true">&laquo;&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item {% if not products.has_previous %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ products.previous_page_number }}{% if request.GET.some_filter %}&some_filter={{ request.GET.some_filter }}{% endif %}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <li class="page-item {% if not products.has_next %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ products.next_page_number }}{% if request.GET.some_filter %}&some_filter={{ request.GET.some_filter }}{% endif %}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        <li class="page-item {% if not products.has_next %}disabled{% endif %}">
+          <a class="page-link" href="?page={{ products.paginator.num_pages }}{% if request.GET.some_filter %}&some_filter={{ request.GET.some_filter }}{% endif %}" aria-label="Last">
+            <span aria-hidden="true">&raquo;&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Search Form -->
+  <div class="container my-4">
+    <form method="get" action="{% url 'product_list' %}" class="d-flex justify-content-center">
+      <input 
+        type="text" 
+        name="q" 
+        class="form-control me-2" 
+        placeholder="Search products..." 
+        value="{{ request.GET.q }}" 
+        style="max-width: 400px;"
+      >
+      <button type="submit" class="btn btn-warning">Search</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+  <script defer>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Event listener for "clear-filter" button
+      document.getElementById("clear-filter").addEventListener("click", function() {
+        // Clear the type filter from the URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete('type'); // Remove the 'type' filter parameter from the URL
+        // Redirect to the updated URL without the filter
+        window.location.href = url.href;
+      });
+    });
+  </script>
+{% endblock %}

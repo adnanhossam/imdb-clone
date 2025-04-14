@@ -1,0 +1,41 @@
+بسم الله الرحمن الرحيم
+this a notes only txt file 
+this is a project of a clone website of the imdb website 
+and in this file we are are going to display are train of thoughts so every time we resume the project we get
+up to speed of where we left 
+
+first of all 
+we need to think about the apps layout and how we are going to partition the code into apps based on the 
+separation of functionality
+
+1- now we have the app the is going to manage admin , superuser and its authorizations
+            we are going to call this the admin app 
+2- an app to manage the home page and the extension of the home page to other pages
+3- an app to manage the user authorizations and authentication , login , logout & signup pages 
+4- an app that is going to manage the apis that handel the data flow from and to the database 
+
+
+now that we have built the project and theadmin and users apps 
+we need to manage the user authentication
+
+
+
+back after a while
+a quick update , now we have created some templates using chatgpt for the home feed and the user authentication
+and done the required urls , and the home feed looks nearly identical to the original imdb website
+and now we need to start a new app that is going to be responsible for the library of the movies/shows
+and how to do crud operations on them using the basic django model/view/template way and not the restfull api way 
+after that we are going to add some users and handle the authorizations oN them 
+we can call this app the library 
+yesterday all the models for the movies artists and all of that 
+now we need to seperate them in diffrent apps and build the crud opperation views for them 
+we can make an app for the movies and tvshows persay & an app for the rest 
+or we can make an app for each of them 
+i see that 5 to 6 apps for them alone is alot of mess regarding the configurations, the number of files and importing and so on
+not to mention that we may need to make other apps 
+what to name it ?
+we can call one cast wich will contain all the cast personel & the other products for the tvshows and movies
+and actually we can make it 3 apps rather than 2 for the sake of making a dedicated app for the many to many relations 
+maybe that could make any sense for the maintaining of the code after that
+ok , i don't see that to have importance because the mannytomany relations are made from the products to they are already seperated
+in the 2 apps idea  

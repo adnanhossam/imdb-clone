@@ -1,0 +1,123 @@
+{% extends 'home.html' %}
+{% load form_extras %}
+{% block title %}Add Product{% endblock %}
+{% block content %}
+<div class="container my-5">
+  <div class="card mx-auto shadow-lg" style="max-width: 700px; background-color: #111; color: #fff;">
+    <div class="card-header text-center text-warning">
+      <h2 class="mb-0">Add Product</h2>
+    </div>
+    <div class="card-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Display Non-Field Errors -->
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+          {% for error in form.non_field_errors %}
+          <p>{{ error }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Form Group for Name -->
+        <div class="mb-4">
+          <label for="id_name" class="form-label text-warning fs-5">Name</label>
+          {{ form.name|add_class:"form-control bg-dark text-light border-warning shadow-sm" }}
+          {% for error in form.name.errors %}
+          <div class="text-danger mt-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Form Group for Director -->
+        <div class="mb-4">
+          <label for="id_director" class="form-label text-warning fs-5">Director</label>
+          {{ form.director|add_class:"form-control bg-dark text-light border-warning shadow-sm" }}
+          {% for error in form.director.errors %}
+          <div class="text-danger mt-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Form Group for Writer -->
+        <div class="mb-4">
+          <label for="id_writer" class="form-label text-warning fs-5">Writer</label>
+          {{ form.writer|add_class:"form-control bg-dark text-light border-warning shadow-sm" }}
+          {% for error in form.writer.errors %}
+          <div class="text-danger mt-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Form Group for Actors -->
+        <div class="mb-4">
+          <label for="id_actors" class="form-label text-warning fs-5">Actors</label>
+          {{ form.actors|add_class:"form-control bg-dark text-light border-warning shadow-sm" }}
+          {% for error in form.actors.errors %}
+          <div class="text-danger mt-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Form Product Type -->
+        <div class="mb-4">
+          <label for="id_actors" class="form-label text-warning fs-5">Type</label>
+          {{ form.type|add_class:"form-control bg-dark text-light border-warning shadow-sm" }}
+          {% for error in form.actors.errors %}
+          <div class="text-danger mt-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Form Group for Year of Production -->
+        <div class="mb-4">
+          <label for="id_year_of_production" class="form-label text-warning fs-5">Year of Production</label>
+          {{ form.year_of_production|add_class:"form-control bg-dark text-light border-warning shadow-sm" }}
+          {% for error in form.year_of_production.errors %}
+          <div class="text-danger mt-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Form Group for Length -->
+        <div class="mb-4">
+          <label for="id_length" class="form-label text-warning fs-5">Length (in minutes)</label>
+          {{ form.length|add_class:"form-control bg-dark text-light border-warning shadow-sm" }}
+          {% for error in form.length.errors %}
+          <div class="text-danger mt-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Form Group for IMDb Rating -->
+        <div class="mb-4">
+          <label for="id_imdb_rating" class="form-label text-warning fs-5">IMDb Rating</label>
+          {{ form.imdb_rating|add_class:"form-control bg-dark text-light border-warning shadow-sm" }}
+          {% for error in form.imdb_rating.errors %}
+          <div class="text-danger mt-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Form Group for Your Rating -->
+        <div class="mb-4">
+          <label for="id_your_rating" class="form-label text-warning fs-5">Your Rating</label>
+          {{ form.your_rating|add_class:"form-control bg-dark text-light border-warning shadow-sm" }}
+          {% for error in form.your_rating.errors %}
+          <div class="text-danger mt-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Form Group for Thumbnail -->
+        <div class="mb-4">
+          <label for="id_thumbnail" class="form-label text-warning fs-5">Thumbnail</label>
+          {{ form.thumbnail|add_class:"form-control bg-dark text-light border-warning shadow-sm" }}
+          {% for error in form.thumbnail.errors %}
+          <div class="text-danger mt-1">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-grid">
+          <button type="submit" class="btn btn-warning btn-lg">
+            <i class="bi bi-plus-circle-fill"></i> Add Product
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

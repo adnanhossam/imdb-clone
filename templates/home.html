@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IMDb Clone</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #000; /* Black background */
+        color: #fff; /* White text */
+        font-family: 'Roboto', sans-serif;
+        margin: 0; /* Remove any default margin */
+        height: 100vh; /* Full height of the viewport */
+        display: flex;
+        flex-direction: column; /* Allow the body to have flex behavior */
+      }
+    
+      .navbar {
+        background-color: #121212 !important; /* Darker navbar */
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      }
+    
+      .navbar-brand,
+      .nav-link {
+        color: #ffc107 !important; /* Yellow headers and links */
+      }
+    
+      .nav-link:hover {
+        color: #fff !important; /* White on hover */
+      }
+    
+      .navbar-toggler-icon {
+        background-color: #ffc107;
+      }
+    
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        color: #ffc107; /* Yellow headers */
+      }
+    
+      .btn-primary {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #000;
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+      }
+    
+      .btn-primary:hover {
+        background-color: #e0a800;
+        border-color: #d39e00;
+      }
+    
+      .btn-outline-light {
+        color: #ffc107;
+        border-color: #ffc107;
+        padding: 10px 20px;
+      }
+    
+      .btn-outline-light:hover {
+        color: #000;
+        background-color: #ffc107;
+        border-color: #ffc107;
+      }
+    
+      /* Hero Section */
+      .hero-section {
+        background: linear-gradient(45deg, #1c1c1c, #555);
+        color: #fff;
+        padding: 100px 0;
+        border-radius: 8px;
+        text-align: center;
+        flex-grow: 1; /* Make this section grow to fill available space */
+      }
+    
+      .hero-section h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+      }
+    
+      .hero-section p {
+        font-size: 1.2rem;
+        margin-bottom: 40px;
+      }
+    
+      .hero-section .btn-primary {
+        font-size: 1.2rem;
+        text-transform: none;
+      }
+    
+      /* Footer */
+      footer {
+        color: #fff;
+        padding: 30px 0;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+        margin-bottom: 0; /* Remove any margin from the footer */
+      }
+    
+      footer p {
+        font-size: 1rem;
+        margin-bottom: 0;
+      }
+    
+      .footer-logo {
+        color: #ffc107;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+    
+      .footer-logo:hover {
+        color: #e0a800;
+      }
+    
+      /* Responsive Image */
+      .img-fluid {
+        max-width: 100%;
+        height: auto;
+      }
+    
+      @media (max-width: 768px) {
+        .hero-section h1 {
+          font-size: 2rem;
+        }
+    
+        .hero-section p {
+          font-size: 1rem;
+        }
+      }
+    </style>    
+  </head>
+  <body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">IMDb Clone</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'product_list' %}?type=Movie">Movies</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'product_list' %}?type=TV-Show">TV Shows</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'list_name' %}">Cast</a>
+            </li>
+          </ul>
+
+          <!-- Conditional Login/Logout Section -->
+          <ul class="navbar-nav ms-auto">
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <span class="nav-link"> Hello, {{ user.username }} </span>
+            </li>
+            <li class="nav-item">
+              <form method="post" action="{% url 'logout' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-light btn-sm">
+                  Logout
+                </button>
+              </form>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a
+                href="{% url 'login' %}"
+                class="btn btn-outline-light btn-sm me-2"
+                >Sign In</a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'signup' %}" class="btn btn-primary btn-sm"
+                >Sign Up</a
+              >
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    {% if request.resolver_match.url_name == 'home' %}
+      <!-- Hero Section (only displayed on the homepage) -->
+      <div class="hero-section">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6">
+              <h1>Welcome to IMDb Clone</h1>
+              <p>Discover movies, TV shows, and entertainment content from around the world.</p>
+              <a href="#" class="btn btn-primary">Explore Now</a>
+            </div>
+            <div class="col-lg-6">
+              <img
+                src="https://via.placeholder.com/600x400"
+                class="img-fluid rounded"
+                alt="Featured Movie"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+
+    <!-- Dynamic Content Section -->
+    <div class="container my-5">
+      {% block content %}
+      <!-- Default content goes here, or leave it empty for child templates -->
+      {% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-2">
+      <div class="container text-center">
+        <p class="mb-0" style="font-size: 0.9rem;">&copy; 2024 IMDb Clone. All rights reserved.</p>
+      </div>
+    </footer>
+
+
+    <!-- Block for including custom scripts -->
+    {% block script %}
+    <!-- Custom scripts for child templates can go here -->
+    {% endblock %}
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

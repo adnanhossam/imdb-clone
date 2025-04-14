@@ -1,0 +1,92 @@
+{% extends 'home.html' %}
+{% block title %}Name Details{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="card bg-dark text-white mx-auto" style="max-width: 800px;">
+    <div class="card-header text-center">
+      <h2>{{ object.name }}</h2>
+    </div>
+    <div class="card-body">
+      <!-- Profile Picture -->
+      {% if object.profile_picture %}
+      <div class="text-center mb-4">
+        <img
+          src="{{ object.profile_picture.url }}"
+          alt="{{ object.name }}"
+          class="img-fluid rounded shadow"
+          style="max-height: 300px; width: auto;"
+        />
+      </div>
+      {% else %}
+      <p class="text-center text-muted">No Profile Picture Available</p>
+      {% endif %}
+
+      <!-- Name -->
+      <p><strong>Name:</strong> {{ object.name }}</p>
+
+      <p><strong>Profession:</strong> {{ object.profession }}</p>
+
+      <!-- Products (Actors) -->
+      {% if object.actors.all %}
+      <p><strong>Products (Actors):</strong></p>
+      <ul class="list-group list-group-flush mb-3">
+        {% for product in object.actors.all %}
+        <li class="list-group-item bg-dark text-white">
+          <a href="{% url 'detail_product' product.id %}" class="text-warning">
+            {{ product.name }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <!-- Products (Directors) -->
+      {% if object.directors.all %}
+      <p><strong>Products (Directors):</strong></p>
+      <ul class="list-group list-group-flush mb-3">
+        {% for product in object.directors.all %}
+        <li class="list-group-item bg-dark text-white">
+          <a href="{% url 'detail_product' product.id %}" class="text-warning">
+            {{ product.name }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <!-- Products (Writers) -->
+      {% if object.writers.all %}
+      <p><strong>Products (Writers):</strong></p>
+      <ul class="list-group list-group-flush mb-3">
+        {% for product in object.writers.all %}
+        <li class="list-group-item bg-dark text-white">
+          <a href="{% url 'detail_product' product.id %}" class="text-warning">
+            {{ product.name }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      <!-- Message if no products or professions exist -->
+      {% if not object.profession and not object.actors.all and not object.directors.all and not object.writers.all %}
+      <p class="text-muted">No additional information available for this name.</p>
+      {% endif %}
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="card-footer text-center">
+      <a href="{% url 'update_name' object.id %}" class="btn btn-warning me-2">Edit Name</a>
+      <form
+        method="get"
+        action="{% url 'delete_name' object.id %}"
+        class="d-inline"
+      >
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete Name</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

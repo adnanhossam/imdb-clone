@@ -1,0 +1,23 @@
+services:
+  app:
+    image: adnanhossam/imdb
+    build:
+      context: .
+    environment:
+      DJANGO_SECRET_KEY: "django-insecure"
+      DJANGO_DEBUG: "true"
+      DJANGO_DATABASE_NAME: "imdb"
+      DJANGO_DATABASE_HOST: "database"
+      DJANGO_DATABASE_USER: "postgres"
+      DJANGO_DATABASE_PASSWORD: "dbpass"
+
+  database:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: "dbpass"
+      POSTGRES_DB: "imdb"
+    volumes:
+      - "database:/var/lib/postgresql/data:rw"
+
+volumes:
+  database: {}
